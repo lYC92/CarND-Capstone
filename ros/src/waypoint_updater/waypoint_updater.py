@@ -4,6 +4,7 @@ import rospy
 from geometry_msgs.msg import PoseStamped
 from styx_msgs.msg import Lane, Waypoint
 
+from scipy.spatial import KDTree
 import math
 
 '''
@@ -32,20 +33,40 @@ class WaypointUpdater(object):
         rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
 
         # TODO: Add a subscriber for /traffic_waypoint and /obstacle_waypoint below
+        rospy.Subscriber('/obstacle_waypoint', PoseStamped, self.obstacle_cb)
+        # rospy.Subscriber('/traffic_waypoint', Int32, self.traffic_cb) ## not used
 
-
+        # Publisher
         self.final_waypoints_pub = rospy.Publisher('final_waypoints', Lane, queue_size=1)
 
         # TODO: Add other member variables you need below
+        self.stopline_wp_idx = -1
 
-        rospy.spin()
+
+        self.pose = None
+        self.base_waypoints = None
+        self.waypoints_2d = None
+        self.waypoint_tree = None
+        # Gives us control over the publishing frequency
+        self.loop()
+
+
+    def loop():
+        rate = rospy.Rate(50)
+        while not rospy.is_shutdown():
+            if self.pose and self.base_waypoints:
+                closest_waypoint_idx = self.get // todo
+            rate.sleep()
 
     def pose_cb(self, msg):
         # TODO: Implement
+        self.pose = msg
         pass
 
     def waypoints_cb(self, waypoints):
         # TODO: Implement
+        self.base_waypoints = waypoints
+
         pass
 
     def traffic_cb(self, msg):
