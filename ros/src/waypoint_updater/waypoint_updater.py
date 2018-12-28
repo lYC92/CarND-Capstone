@@ -33,15 +33,13 @@ class WaypointUpdater(object):
         rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
 
         # TODO: Add a subscriber for /traffic_waypoint and /obstacle_waypoint below
-        rospy.Subscriber('/obstacle_waypoint', PoseStamped, self.obstacle_cb)
-        # rospy.Subscriber('/traffic_waypoint', Int32, self.traffic_cb) ## not used
+        #rospy.Subscriber('/obstacle_waypoint', PoseStamped, self.obstacle_cb)
+        rospy.Subscriber('/traffic_waypoint', Int32, self.traffic_cb)
 
         # Publisher
         self.final_waypoints_pub = rospy.Publisher('final_waypoints', Lane, queue_size=1)
 
         # TODO: Add other member variables you need below
-        self.stopline_wp_idx = -1
-
 
         self.pose = None
         self.base_waypoints = None
@@ -51,7 +49,7 @@ class WaypointUpdater(object):
         self.loop()
 
 
-    def loop():
+    def loop(self):
         rate = rospy.Rate(50)
         while not rospy.is_shutdown():
             if self.pose and self.base_waypoints:
@@ -69,7 +67,7 @@ class WaypointUpdater(object):
 
         cl_vect = np.array(closest_coord)
         prev_vect = np.array(prev_coord)
-        pos_vect = mp.array([x,y])
+        pos_vect = np.array([x,y])
 
         val = np.dot(cl_vect-prev_vect, pos_vect-cl_vect)
 
