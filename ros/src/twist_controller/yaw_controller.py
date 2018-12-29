@@ -32,5 +32,5 @@ class YawController(object):
         # offset of the current position and time kp
         # https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
         d = np.cross(p2-p1, p1-pose) / np.linalg.norm(p2-p1)
-        angle = kp * d
+        angle = self.kp * d
         return  max(self.min_angle, min(self.max_angle, angle))
