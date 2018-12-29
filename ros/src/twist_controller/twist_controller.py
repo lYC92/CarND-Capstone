@@ -39,8 +39,12 @@ class Controller(object):
         #rospy.logwarn("linear_vel: {0}".format(linear_vel))
         #rospy.logwarn("angular_vel: {0}".format(angular_vel))
 
-        # steering = self.yaw_controller.get_steering(linear_vel, angular_vel, current_vel)
-        steering = self.yaw_controller.get_steering_P(pose, p1, p2)
+        # turn out the main reason is the low update frequency that cause swiggle
+        steering = self.yaw_controller.get_steering(linear_vel, angular_vel, current_vel)
+
+        # The P controller is implemented but have no good effect. because
+        # the main problem is caused by low check rate
+        # steering = self.yaw_controller.get_steering_P(pose, p1, p2)
 
         vel_error = linear_vel - current_vel
     	self.last_vel = current_vel
