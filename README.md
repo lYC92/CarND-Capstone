@@ -10,10 +10,11 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 In this project, the software that driving Carla is developed. The main function
 includes: 1)waypoint updater, 2) DBW, 3) Traffic light detector.
 
+__Note:__ The implementation of this code refer to the tutorial provided in the project guideline video.  
+
 ### waypoint updater
 This function (node) publish way point ahead of car. When the car face a red light (stop index) it will generate decelerate waypoints to make sure the car will stop.
 
-__Note:__ The implementation of this code refer to the tutorial provided in the project guideline video.  
 
 ### Drive-by-wire
 This node control steering, brake and throttle of the car.
