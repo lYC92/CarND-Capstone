@@ -1,5 +1,35 @@
+# Self-Driving Car Capstone (individual submission)
+
 This is the project repo for the final project of the Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car. For more information about the project, see the project introduction [here](https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/5ab4b122-83e6-436d-850f-9f4d26627fd9).
 
+|Name | email |
+|:-----------------|:-------|
+| Yangchuan Li | liyangchuan654@gmail.com |
+
+## introduction
+In this project, the software that driving Carla is developed. The main function
+includes: 1)waypoint updater, 2) DBW, 3) Traffic light detector.
+
+### waypoint updater
+This function (node) publish way point ahead of car. When the car face a red light (stop index) it will generate decelerate waypoints to make sure the car will stop.
+
+__Note:__ The implementation of this code refer to the tutorial provided in the project guideline video.  
+
+### Drive-by-wire
+This node control steering, brake and throttle of the car.
+
+The throttle is controlled by PID controller. The input is the different of real velocity and desired velocity.
+
+The brake is calculated by ```vel_error * vehicle_mass * wheel_radius```.
+
+The steering is calculated in yaw_controller which compute needed angle to keep needed angular velocity. Also, steering command is filtered with a low pass filter.
+
+### Traffic light detector
+
+
+
+
+## Installation
 Please use **one** of the two installation options, either native **or** docker installation.
 
 ### Native Installation
