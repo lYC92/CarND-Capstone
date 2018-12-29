@@ -7,6 +7,7 @@ from geometry_msgs.msg import TwistStamped
 import math
 from geometry_msgs.msg import PoseStamped
 from styx_msgs.msg import Lane, Waypoint
+import numpy as np
 
 from twist_controller import Controller
 
