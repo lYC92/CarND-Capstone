@@ -70,12 +70,19 @@ class DBWNode(object):
         rospy.Subscriber('/twist_cmd', TwistStamped, self.twist_cb)
         rospy.Subscriber('/current_velocity', TwistStamped, self.velocity_cb)
 
+
         self.current_vel = None
         self.curr_ang_vel = None
         self.dbw_enabled = None
         self.linear_vel = None
         self.angular_vel = None
         self.throttle = self.steering = self.brake = 0
+
+        rospy.Subscriber('/final_waypoints', Lane, self.waypoints_cb)
+        rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
+        self.p1 = None
+        self.p2 = None
+        self.pose = None
 
         self.loop()
 
@@ -84,14 +91,29 @@ class DBWNode(object):
         while not rospy.is_shutdown():
             # TODO: Get predicted throttle, brake, and steering using `twist_controller`
             # You should only publish the control commands if dbw is enabled
-            if not None in (self.current_vel, self.linear_vel, self.angular_vel):
+            if not None in (self.current_vel, self.linear_vel, self.angular_vel, self.p1, self.p2, self.pose):
                 self.throttle, self.brake, self.steering = self.controller.control(self.current_vel,
                                                                 self.dbw_enabled,
                                                                 self.linear_vel,
-                                                                self.angular_vel)
+                                                                self.angular_vel,
+                                                                self.pose,
+                                                                self.p1,
+                                                                self.p2)
             if self.dbw_enabled:
               self.publish(self.throttle, self.brake, self.steering)
             rate.sleep()
+
+    def waypoints_cb(self, waypoints):
+        # TODO: Implement
+        self.p1 = np.array([waypoints.waypoints[0].pose.pose.position.x,
+                            waypoints.waypoints[0].pose.pose.position.y])
+        self.p2 = np.array([waypoints.waypoints[1].pose.pose.position.x,
+                            waypoints.waypoints[1].pose.pose.position.y])
+
+
+    def pose_cb(self, pose):
+        # TODO: Implement
+        self.pose = np.array([pose.pose.position.x, pose.pose.position.y])
 
     def dbw_enabled_cb(self, msg):
         self.dbw_enabled = msg

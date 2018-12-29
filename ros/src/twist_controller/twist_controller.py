@@ -12,7 +12,7 @@ class Controller(object):
     def __init__(self, vehicle_mass, fuel_capacity, brake_deadband, decel_limit,
     	accel_limit, wheel_radius, wheel_base, steer_ratio, max_lat_accel, max_steer_angle):
         # TODO: Implement
-        self.yaw_controller = YawController(wheel_base, steer_ratio, 0.1, max_lat_accel, max_steer_angle)
+        self.yaw_controller = YawController(wheel_base, steer_ratio, 0.1, max_lat_accel, max_steer_angle, 0.1)
         self.throttle_controller = PID(0.3, 0.1, 0.0, 0, 0.2)
         self.vel_lpf = LowPassFilter(0.5, 0.02)
 
@@ -26,7 +26,7 @@ class Controller(object):
         self.last_time = rospy.get_time()
 
 
-    def control(self, current_vel, dbw_enabled, linear_vel, angular_vel):
+    def control(self, current_vel, dbw_enabled, linear_vel, angular_vel, pose, p1, p2):
         # TODO: Change the arg, kwarg list to suit your needs
         # Return throttle, brake, steer
 
@@ -39,7 +39,8 @@ class Controller(object):
         #rospy.logwarn("linear_vel: {0}".format(linear_vel))
         #rospy.logwarn("angular_vel: {0}".format(angular_vel))
 
-        steering = self.yaw_controller.get_steering(linear_vel, angular_vel, current_vel)
+        # steering = self.yaw_controller.get_steering(linear_vel, angular_vel, current_vel)
+        steering = self.yaw_controller.get_steering_P(pose, p1, p2)
 
         vel_error = linear_vel - current_vel
     	self.last_vel = current_vel

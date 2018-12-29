@@ -1,7 +1,7 @@
 from math import atan
 
 class YawController(object):
-    def __init__(self, wheel_base, steer_ratio, min_speed, max_lat_accel, max_steer_angle):
+    def __init__(self, wheel_base, steer_ratio, min_speed, max_lat_accel, max_steer_angle, kp):
         self.wheel_base = wheel_base
         self.steer_ratio = steer_ratio
         self.min_speed = min_speed
@@ -9,6 +9,8 @@ class YawController(object):
 
         self.min_angle = -max_steer_angle
         self.max_angle = max_steer_angle
+
+        self.kp = kp
 
 
     def get_angle(self, radius):
@@ -23,3 +25,11 @@ class YawController(object):
             angular_velocity = max(-max_yaw_rate, min(max_yaw_rate, angular_velocity))
 
         return self.get_angle(max(current_velocity, self.min_speed) / angular_velocity) if abs(angular_velocity) > 0. else 0.0;
+
+    def get_steering_P(self, pose, p1, p2):
+        # this use closest pt and second closest pt to form a line and calculate
+        # offset of the current position and time kp
+        # https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+        d = np.cross(p2-p1, p1-pose) / np.linalg.norm(p2-p1)
+        angle = kp * d
+        return  max(self.min_angle, min(self.max_angle, angle))
