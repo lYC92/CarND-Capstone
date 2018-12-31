@@ -78,6 +78,7 @@ class TLDetector(object):
         of times till we start using it. Otherwise the previous stable state is
         used.
         '''
+        # For demo purpose: to show controller is working
         # if self.state != state:
         #     self.state_count = 0
         #     self.state = state

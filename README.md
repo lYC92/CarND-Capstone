@@ -35,11 +35,11 @@ It seems there is bandwith issue on ROS topic information transfer between simul
 
 To illustrate what I finish, I made the following test in the workspace.
 
-1. In ```tl_detector.py``` I publish the traffic light result from ```/vehicle/traffic_lights``` topic. The purpose is to demo that if the classifier could give me the correct traffic light result, the car will just move as expected. And the result is showed as this, so basically the car drive as expected.  
+1. In ```tl_detector.py``` I publish the traffic light result from ```/vehicle/traffic_lights``` topic. The purpose is to demo that if the classifier could give me the correct traffic light result, the car will just move as expected. And the result is showed as this, so basically the car drive as expected. [VIDEO](https://youtu.be/YM-ivWJ_Jx4)
 
-2. Open classifier and see what's going on. And the result is not as expected.
+2. Open classifier and see what's going on. And the result is not as expected. But as you can see when facing the first traffic light. The car did stop, which shows that classifier is actually working. But later the way point shows bigger and bigger update latency to make the car controller doesn't work. And in both cases we have only 20 waypoints output to save bandwith for image.  [VIDEO](https://youtu.be/MpXzocVA8b0)
 
-So since I have the model trained with good result, I really think the second case could work if there is better computing resource available. In my case, I only have laptop locally, and the workspace seems not work very good as well. 
+So since I have the model trained with good result, I really think the second case could work if there is better computing resource available. In my case, I only have laptop locally, and the workspace seems not work very good as well.
 
 ## Installation
 In my case, two environment are used.
