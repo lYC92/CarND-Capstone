@@ -8,13 +8,12 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 
 ## introduction
 In this project, the software that driving Carla is developed. The main function
-includes: 1)waypoint updater, 2) DBW, 3) Traffic light detector.
+includes: 1) waypoint updater, 2) DBW, 3) Traffic light detector.
 
 __Note:__ The implementation of this code refer to the tutorial provided in the project guideline video.  
 
 ### waypoint updater
 This function (node) publish way point ahead of car. When the car face a red light (stop index) it will generate decelerate waypoints to make sure the car will stop.
-
 
 ### Drive-by-wire
 This node control steering, brake and throttle of the car.
@@ -26,52 +25,38 @@ The brake is calculated by ```vel_error * vehicle_mass * wheel_radius```.
 The steering is calculated in yaw_controller which compute needed angle to keep needed angular velocity. Also, steering command is filtered with a low pass filter.
 
 ### Traffic light detector
+The traffic light detector recognize the picture from the ```/image_color``` topic and push the traffic light result to ```/traffic_waypoint``` topic. The classifier model derives from object detection model provided in this [tensor flow repo](https://github.com/tensorflow/models). And also thanks to this helpful [tutorial](https://github.com/alex-lechner/Traffic-Light-Classification) from Alexander Lechner, a classifier model can be derived by using transfer learning technique.
+
+The pre-trained model I used is SSD Inception V2 Coco (17/11/2017). And the labeled data is using the data provided in the [tutorial](https://github.com/alex-lechner/Traffic-Light-Classification). After running the transfer learning program, we got the frozen graph used in classifier.
 
 
+## Trouble I found
+It seems there is bandwith issue on ROS topic information transfer between simulator and ROS controller. Right now I have the trained classifier model and a controller that works. But when I want to combine those, i.e. open the camera mode and using classifier to recognize traffic light. The latency is so significant that doesn't make things work.
 
+To illustrate what I finish, I made the following test in the workspace.
+
+1. In ```tl_detector.py``` I publish the traffic light result from ```/vehicle/traffic_lights``` topic. The purpose is to demo that if the classifier could give me the correct traffic light result, the car will just move as expected. And the result is showed as this, so basically the car drive as expected.  
+
+2. Open classifier and see what's going on. And the result is not as expected.
+
+So since I have the model trained with good result, I really think the second case could work if there is better computing resource available. In my case, I only have laptop locally, and the workspace seems not work very good as well. 
 
 ## Installation
-Please use **one** of the two installation options, either native **or** docker installation.
+In my case, two environment are used.
+
+The first one is in local: the ROS program is running in virtual machine with port forwarding described below. The host OS is MacOS and the simulator runs in it.
+
+The second one is using workspace provided by Udacity which has GPU equipped.
 
 ### Native Installation
-
-* Be sure that your workstation is running Ubuntu 16.04 Xenial Xerus or Ubuntu 14.04 Trusty Tahir. [Ubuntu downloads can be found here](https://www.ubuntu.com/download/desktop).
-* If using a Virtual Machine to install Ubuntu, use the following configuration as minimum:
-  * 2 CPU
-  * 2 GB system memory
-  * 25 GB of free hard drive space
-
-  The Udacity provided virtual machine has ROS and Dataspeed DBW already installed, so you can skip the next two steps if you are using this.
-
-* Follow these instructions to install ROS
-  * [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu) if you have Ubuntu 16.04.
-  * [ROS Indigo](http://wiki.ros.org/indigo/Installation/Ubuntu) if you have Ubuntu 14.04.
-* [Dataspeed DBW](https://bitbucket.org/DataspeedInc/dbw_mkz_ros)
-  * Use this option to install the SDK on a workstation that already has ROS installed: [One Line SDK Install (binary)](https://bitbucket.org/DataspeedInc/dbw_mkz_ros/src/81e63fcc335d7b64139d7482017d6a97b405e250/ROS_SETUP.md?fileviewer=file-view-default)
+* Download the Udacity virtual machine and setup [port forwarding](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/16cf4a78-4fc7-49e1-8621-3450ca938b77)
 * Download the [Udacity Simulator](https://github.com/udacity/CarND-Capstone/releases).
-
-### Docker Installation
-[Install Docker](https://docs.docker.com/engine/installation/)
-
-Build the docker container
-```bash
-docker build . -t capstone
-```
-
-Run the docker file
-```bash
-docker run -p 4567:4567 -v $PWD:/capstone -v /tmp/log:/root/.ros/ --rm -it capstone
-```
-
-### Port Forwarding
-To set up port forwarding, please refer to the [instructions from term 2](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/16cf4a78-4fc7-49e1-8621-3450ca938b77)
 
 ### Usage
 
-1. Clone the project repository
-```bash
-git clone https://github.com/udacity/CarND-Capstone.git
-```
+In virtual machine
+
+1. Unzip the project zip package
 
 2. Install python dependencies
 ```bash
@@ -85,21 +70,7 @@ catkin_make
 source devel/setup.sh
 roslaunch launch/styx.launch
 ```
-4. Run the simulator
 
-### Real world testing
-1. Download [training bag](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/traffic_light_bag_file.zip) that was recorded on the Udacity self-driving car.
-2. Unzip the file
-```bash
-unzip traffic_light_bag_file.zip
-```
-3. Play the bag file
-```bash
-rosbag play -l traffic_light_bag_file/traffic_light_training.bag
-```
-4. Launch your project in site mode
-```bash
-cd CarND-Capstone/ros
-roslaunch launch/site.launch
-```
-5. Confirm that traffic light detection works on real life images
+In host OS
+
+4. Run the simulator
